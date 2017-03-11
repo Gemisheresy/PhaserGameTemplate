@@ -1,0 +1,36 @@
+Here's how to use Phaser with Webpack:
+
+You have to use a custom build of Phaser. You cannot use one of the builds from the dist folder. Here is the grunt custom task I used:
+grunt custom --exclude p2,creature,ninja --split true
+
+This will create phaser.js and pixi.js files in the dist folder. Copy those over to your project folder.
+
+In Webpack you need to install the script-loader:
+npm install script-loader --save-dev
+
+In your webpack.config.js flag Phaser and Pixi to use the script loader. There are various ways of doing this, but I used this approach:
+module.exports = {
+
+    entry: "./src/entry.js",
+
+    output: {
+        path: __dirname,
+        filename: "bundle.js"
+    },
+
+    module: {
+        loaders: [
+            { test: /pixi.js/, loader: "script" },
+            { test: /phaser.js/, loader: "script" }
+        ]
+    }
+
+};
+In my entry.js I just have this:
+require('../lib/pixi.js');
+require('../lib/phaser.js');
+require('./main.js');
+main.js contains my test game, which is just a basic Phaser example.
+
+Then build it.
+Using the split Phaser / PIXI libs and the Webpack script loader I was able to bundle my game up quite happily without any changes to the core Phaser source.
